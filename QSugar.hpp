@@ -181,7 +181,7 @@ public:
         return *dynamic_cast<QDomDocument*>(this);
     }
     
-    /// synonym
+    /// synonym for operator>>()
     QDomDocument operator<< (QDomDocument doc)
     { return operator>>(doc); }
     

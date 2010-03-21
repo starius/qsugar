@@ -249,13 +249,50 @@ bool test_xmlModify()
 }
 
 
+bool test_xmlLifelike()
+{
+    QDomDocument doc = QXML"rss";
+    QDomDocument channel = QXML"channel";
+    // for ( ... )
+    {
+        channel << (QXML"item"
+            << "title" >> "RSS test"
+            << "link" >> "http://bitbucket.org/cblp/qsugar/"
+            << "description" >> "Exporting RSS-like snippet of XML code using both classic QtXml approach and QXML pseudokeyword."
+            << "author" >> "cblp"
+            << "pubDate" >> QDateTime::currentDateTime().toString(Qt::ISODate)
+        );
+    }
+    doc << channel; // Yes, QSugar is here!
+
+    qDebug() << doc.toString(4);
+    
+    return true;
+}
+
+
 int main(int argc, char * argv[])
 {
     QApplication app(argc, argv);
     
-    //test_QLIST_QDICT();
-    test_xmlExport();
-    //test_xmlModify();
+    if ( argc <= 1 )
+        return 1;
+    
+    switch ( argv[1][0] )
+    {
+    case '1':
+        test_QLIST_QDICT();
+        break;
+    case '2':
+        test_xmlExport();
+        break;
+    case '3':
+        test_xmlModify();
+        break;
+    case '4':
+        test_xmlLifelike();
+        break;
+    }
     
     return 0;
 }
