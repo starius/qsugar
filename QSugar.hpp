@@ -1,3 +1,25 @@
+// Copyright 2010, Juri Syrowiecki
+// 
+// This file is part of QSugar.
+// 
+// QSugar is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// QSugar is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with QSugar.  If not, see <http://www.gnu.org/licenses/>.
+
+
+#ifndef QSugar_QSugar_hpp
+#define QSugar_QSugar_hpp
+
+
 #include <QtCore>
 #include <QtXml>
 
@@ -241,3 +263,6 @@ extern const QSugarVariantList QLIST;
 extern const QSugarVariantMap QDICT;
 extern const QDomDocument _QXML;
 #define QXML _QXML*
+
+
+#endif // QSugar_QSugar_hpp
