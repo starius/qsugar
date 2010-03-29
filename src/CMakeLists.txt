@@ -30,6 +30,8 @@ find_package( Qt4 4.4.3
 )
 include( ${QT_USE_FILE} )
 
+include_directories( ../include )
+
 
 ################################################################################
 ## Source ######################################################################
@@ -66,7 +68,7 @@ target_link_libraries( ${TARGET}
 ## Standards compliance ########################################################
 
 set_target_properties(
-    ${PROJECT}
+    ${TARGET}
 PROPERTIES
     COMPILE_FLAGS "-Wall -Wextra"
 )
