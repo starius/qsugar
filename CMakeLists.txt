@@ -1,3 +1,21 @@
+# Copyright 2010, Juri Syrowiecki
+# 
+# This file is part of QSugar.
+# 
+# QSugar is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# QSugar is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with QSugar.  If not, see <http://www.gnu.org/licenses/>.
+
+
 cmake_minimum_required( VERSION 2.6 )
 
 set( PROJECT QSugar )
@@ -6,66 +24,7 @@ project( ${PROJECT} )
 
 
 ################################################################################
-## Libraries ###################################################################
+## Components ##################################################################
 
-find_package( Qt4 REQUIRED )
-#set( QT_DONT_USE_QTGUI TRUE )
-set( QT_USE_QTXML TRUE )
-include( ${QT_USE_FILE} )
-
-
-################################################################################
-## Source ######################################################################
-
-set( SOURCES
-    QSugar.cpp
-)
-
-set( HEADERS
-    #QSugar.hpp
-)
-
-
-################################################################################
-## Targets #####################################################################
-
-qt4_wrap_cpp( HEADERS_COMPILED
-    ${HEADERS}
-)
-
-add_library( ${PROJECT} SHARED
-    ${SOURCES}
-    ${HEADERS_COMPILED}
-)
-
-target_link_libraries( ${PROJECT}
-    ${QT_LIBRARIES}
-)
-
-
-################################################################################
-## Tests #######################################################################
-
-set( TEST_SOURCES
-    QSugar-test.cpp
-)
-
-add_executable( test EXCLUDE_FROM_ALL
-    ${TEST_SOURCES}
-)
-
-target_link_libraries( test
-    ${QT_LIBRARIES}
-    ${PROJECT}
-)
-
-
-################################################################################
-## Standards compliance ########################################################
-
-set_target_properties(
-    ${PROJECT}
-    test
-PROPERTIES
-    COMPILE_FLAGS "-Wall -Wextra"
-)
+add_subdirectory( src )
+add_subdirectory( tests )
