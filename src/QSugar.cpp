@@ -94,3 +94,36 @@ void QSugarVariantMap::buildDom(QDomElement & element, const QVariant & value) c
     {
     }*/
 }
+
+
+QDomDocument operator* (const QDomDocument &, const QString & code)
+{
+    QDomDocument doc;
+    if ( code.indexOf(QRegExp("[<&]")) >= 0 )
+        doc.setContent(code);
+    else
+        doc.appendChild(doc.createElement(code));
+    return doc;
+}
+
+
+QSugarDomDocument operator<< (QDomDocument doc, const QString & key)
+{
+    QSugarDomDocument sugardoc(doc);
+    sugardoc.pendingKey = key;
+    return sugardoc;
+}
+
+
+QDomDocument operator>> (QDomDocument doc, const QString & value)
+{
+    doc.documentElement().appendChild(doc.createTextNode(value));
+    return doc;
+}
+
+
+QDomDocument operator>> (QDomDocument ldoc, const QDomDocument & rdoc)
+{
+    ldoc.documentElement().appendChild(rdoc);
+    return ldoc;
+}

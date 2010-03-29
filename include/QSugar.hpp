@@ -222,40 +222,19 @@ private:
 /// @param code If it looks like XML (contains tags or XML-entities), then it will be parsed.
 ///     (See documentation about QDomDocument::setContent() for details.)
 ///     Otherwise, it is treated as root element name.
-QDomDocument operator* (const QDomDocument &, const QString & code)
-{
-    QDomDocument doc;
-    if ( code.indexOf(QRegExp("[<&]")) >= 0 )
-        doc.setContent(code);
-    else
-        doc.appendChild(doc.createElement(code));
-    return doc;
-}
+QDomDocument operator* (const QDomDocument &, const QString & code);
 
 
-QSugarDomDocument operator<< (QDomDocument doc, const QString & key)
-{
-    QSugarDomDocument sugardoc(doc);
-    sugardoc.pendingKey = key;
-    return sugardoc;
-}
+QSugarDomDocument operator<< (QDomDocument doc, const QString & key);
 
 
-QDomDocument operator>> (QDomDocument doc, const QString & value)
-{
-    doc.documentElement().appendChild(doc.createTextNode(value));
-    return doc;
-}
+QDomDocument operator>> (QDomDocument doc, const QString & value);
 
 
-QDomDocument operator>> (QDomDocument ldoc, const QDomDocument & rdoc)
-{
-    ldoc.documentElement().appendChild(rdoc);
-    return ldoc;
-}
+QDomDocument operator>> (QDomDocument ldoc, const QDomDocument & rdoc);
 
 /// synonym
-QDomDocument operator<< (QDomDocument ldoc, const QDomDocument & rdoc)
+inline QDomDocument operator<< (QDomDocument ldoc, const QDomDocument & rdoc)
 { return ldoc >> rdoc; }
 
 
