@@ -182,18 +182,18 @@ bool test_xmlExport()
     qDebug() << dom.toString(4);
     
     QDomDocument sugarxml1 = QXML"html"
-        >> (QXML"head"
-            << "title" >> "Test page")
-        >> (QXML"body"
-            << "h1" >> "Hello world!"
-            >> (QXML"ul"
-                << "li" >> (QXML"a"
-                    << "@href" >> "http://cblp.su/"
-                    >> "cblp's page"
+        > (QXML"head"
+            <"title"> "Test page")
+        > (QXML"body"
+            <"h1"> "Hello world!"
+            > (QXML"ul"
+                <"li"> (QXML"a"
+                    <"@href"> "http://cblp.su/"
+                    > "cblp's page"
                 )
-                << "li" >> (QXML"a"
-                    << "@href" >> "http://qt.nokia.com/"
-                    >> "Qt home"
+                <"li"> (QXML"a"
+                    <"@href"> "http://qt.nokia.com/"
+                    > "Qt home"
                 )
             )
         );
@@ -256,8 +256,8 @@ bool test_xmlModify()
         
         doc.elementsByTagName("alpha").item(0).appendChild(
             QXML"beta"
-                << "@foo" >> "true"
-                << "@bar" >> "false"
+                <"@foo"> "true"
+                <"@bar"> "false"
         );
         
         qDebug() << doc.toString(4);
@@ -274,15 +274,15 @@ bool test_xmlLifelike()
     // for ( ... )
     {
         channel << (QXML"item"
-            << "title" >> "RSS test"
-            << "link" >> "http://bitbucket.org/cblp/qsugar/"
-            << "description" >> "Exporting RSS-like snippet of XML code using both classic QtXml approach and QXML pseudokeyword."
-            << "author" >> "cblp"
-            << "pubDate" >> QDateTime::currentDateTime().toString(Qt::ISODate)
+            <"title"> "RSS test"
+            <"link"> "http://bitbucket.org/cblp/qsugar/"
+            <"description"> "Exporting RSS-like snippet of XML code using both classic QtXml approach and QXML pseudokeyword."
+            <"author"> "cblp"
+            <"pubDate"> QDateTime::currentDateTime().toString(Qt::ISODate)
         );
     }
-    doc << channel; // Yes, QSugar is here!
-
+    doc << channel; // Yes, QSugar is here, too!
+    
     qDebug() << doc.toString(4);
     
     return true;

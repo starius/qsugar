@@ -173,7 +173,7 @@ public:
         *dynamic_cast<QDomDocument*>(this) = doc;
     }
     
-    QDomDocument operator>> (const QString & value)
+    QDomDocument operator> (const QString & value)
     {
         if ( pendingKey.isEmpty() )
             documentElement().appendChild(createTextNode(value));
@@ -189,7 +189,7 @@ public:
         return *dynamic_cast<QDomDocument*>(this);
     }
     
-    QDomDocument operator>> (QDomDocument doc)
+    QDomDocument operator> (QDomDocument doc)
     {
         if ( pendingKey.isEmpty() )
             documentElement().appendChild(doc);
@@ -203,9 +203,9 @@ public:
         return *dynamic_cast<QDomDocument*>(this);
     }
     
-    /// synonym for operator>>()
+    /// synonym for operator>()
     QDomDocument operator<< (QDomDocument doc)
-    { return operator>>(doc); }
+    { return operator>(doc); }
     
 private:
     
@@ -213,7 +213,7 @@ private:
     
 //friends:
     
-    friend QSugarDomDocument operator<< (QDomDocument doc, const QString & tagName);
+    friend QSugarDomDocument operator< (QDomDocument doc, const QString & tagName);
     
 }; // class QSugarDomDocument
 
@@ -225,17 +225,17 @@ private:
 QDomDocument operator* (const QDomDocument &, const QString & code);
 
 
-QSugarDomDocument operator<< (QDomDocument doc, const QString & key);
+QSugarDomDocument operator< (QDomDocument doc, const QString & key);
 
 
-QDomDocument operator>> (QDomDocument doc, const QString & value);
+QDomDocument operator> (QDomDocument doc, const QString & value);
 
 
-QDomDocument operator>> (QDomDocument ldoc, const QDomDocument & rdoc);
+QDomDocument operator> (QDomDocument ldoc, const QDomDocument & rdoc);
 
 /// synonym
 inline QDomDocument operator<< (QDomDocument ldoc, const QDomDocument & rdoc)
-{ return ldoc >> rdoc; }
+{ return ldoc > rdoc; }
 
 
 extern const QSugarVariantList QLIST;

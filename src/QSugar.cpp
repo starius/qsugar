@@ -107,7 +107,7 @@ QDomDocument operator* (const QDomDocument &, const QString & code)
 }
 
 
-QSugarDomDocument operator<< (QDomDocument doc, const QString & key)
+QSugarDomDocument operator< (QDomDocument doc, const QString & key)
 {
     QSugarDomDocument sugardoc(doc);
     sugardoc.pendingKey = key;
@@ -115,14 +115,14 @@ QSugarDomDocument operator<< (QDomDocument doc, const QString & key)
 }
 
 
-QDomDocument operator>> (QDomDocument doc, const QString & value)
+QDomDocument operator> (QDomDocument doc, const QString & value)
 {
     doc.documentElement().appendChild(doc.createTextNode(value));
     return doc;
 }
 
 
-QDomDocument operator>> (QDomDocument ldoc, const QDomDocument & rdoc)
+QDomDocument operator> (QDomDocument ldoc, const QDomDocument & rdoc)
 {
     ldoc.documentElement().appendChild(rdoc);
     return ldoc;
