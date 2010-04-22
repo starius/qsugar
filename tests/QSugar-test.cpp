@@ -68,7 +68,7 @@ QString prettyString(QVariant qvar, unsigned indent = 0)
 }
 
 
-bool test_QLIST_QDICT()
+bool test_QLIST_QMAP()
 {
     // A list
     
@@ -89,7 +89,7 @@ bool test_QLIST_QDICT()
     m["three"] = "3";
     qDebug() << m;
     
-    m = QDICT
+    m = QMAP
         << "one" >> 1
         << "two" >> 2.0
         << "three" >> "3";
@@ -98,24 +98,20 @@ bool test_QLIST_QDICT()
     
     // A more complicated example
     
-    qDebug() << prettyString(
-        QDICT
+    qDebug() << prettyString(QMAP
         << "one" >> 1
         << "two" >> 2.0
         << "three" >> "3"
-        << "nested list" >> (
-            QLIST
+        << "nested list" >> (QLIST
             << 4
             << 5.0
-        )
-        << "nested dictionary" >> (
-            QDICT
-            << "six" >> "6"
-            << "seven" >> (
-                QLIST
-                << "nested list"
-                << "in a nested dictionary"
+            << QVariant(QLIST
+                << "list"
+                << "in a list"
             )
+        )
+        << "nested dictionary" >> (QMAP
+            << "six" >> "6"
         )
     );
     
@@ -196,25 +192,25 @@ bool test_xmlExport()
     qDebug() << sugarxml1.toString(4);
     
     /*
-    QDomDocument sugarxml2 = (QDICT
-        << "html" >> (QDICT
-            << "head" >> (QDICT
+    QDomDocument sugarxml2 = (QMAP
+        << "html" >> (QMAP
+            << "head" >> (QMAP
                 << "title" >> "Test page"
             )
-            << "body" >> (QDICT
+            << "body" >> (QMAP
                 << "h1" >> "Hello world!"
                 << "ul" >> (QLIST
-                    << (QDICT
-                        << "li" >> (QDICT
-                            << "a" >> (QDICT
+                    << (QMAP
+                        << "li" >> (QMAP
+                            << "a" >> (QMAP
                                 << "@href" >> "http://cblp.su/"
                                 << "" >> "cblp's page"
                             )
                         )
                     )
-                    << (QDICT
-                        << "li" >> (QDICT
-                            << "a" >> (QDICT
+                    << (QMAP
+                        << "li" >> (QMAP
+                            << "a" >> (QMAP
                                 << "@href" >> "http://qt.nokia.com/"
                                 << "" >> "Qt home"
                             )
@@ -286,7 +282,7 @@ bool test_xmlLifelike()
 
 bool test_xmlRepresentation()
 {
-    QVariant var = (QDICT
+    QVariant var = (QMAP
         << "one" >> 1
         << "two" >> 2.0
         << "three" >> "3"
@@ -295,17 +291,11 @@ bool test_xmlRepresentation()
             << 5.0
             << QVariant(QLIST
                 << "list"
-                << "in"
-                << "a"
-                << "list"
+                << "in a list"
             )
         )
-        << "nested_dictionary" >> (QDICT
+        << "nested_dictionary" >> (QMAP
             << "six" >> "6"
-            << "seven" >> (QLIST
-                << "nested list"
-                << "in a nested dictionary"
-            )
         )
     );
     
@@ -334,7 +324,7 @@ int main(int argc, char * argv[])
     switch ( argv[1][0] )
     {
     case '1':
-        test_QLIST_QDICT();
+        test_QLIST_QMAP();
         break;
     case '2':
         test_xmlExport();

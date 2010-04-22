@@ -238,7 +238,7 @@ QDomDocument operator<< (QDomDocument doc, QVariant var);
 
 
 extern const QSugarVariantList QLIST;
-extern const QSugarVariantMap QDICT;
+extern const QSugarVariantMap QMAP;
 extern const QDomDocument _QXML;
 #define QXML _QXML*
 

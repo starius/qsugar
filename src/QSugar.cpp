@@ -20,7 +20,7 @@
 
 
 const QSugarVariantList QLIST;
-const QSugarVariantMap QDICT;
+const QSugarVariantMap QMAP;
 const QDomDocument _QXML;
 
 
