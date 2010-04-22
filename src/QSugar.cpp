@@ -24,41 +24,19 @@ const QSugarVariantMap QDICT;
 const QDomDocument _QXML;
 
 
-QDomDocument QSugarVariantMap::toDom() const
-{
-    QDomDocument doc;
-    
-    if ( isEmpty() )
-        return doc; // empty QDomDocument
-    
-    QDomElement root;
-    
-    if ( count() == 1 )
-    {
-        QString tagName = begin().key();
-        root = doc.createElement(tagName);
-        doc.appendChild(root);
-        buildDom(root, value(tagName));
-    }
-    else
-    {
-        root = doc.createElement("root");
-        doc.appendChild(root);
-        buildDom(root, *this);
-    }
-    
-    return doc;
-}
-
-
-void QSugarVariantMap::buildDom(QDomElement & element, const QVariant & value) const
+void buildDom(QDomElement element, const QVariant & value)
 {
     switch ( value.type() )
     {
         case QVariant::List:
         {
+            element.setAttribute("valuetype", "list");
             foreach ( QVariant it, value.toList() )
-                buildDom(element, it);
+            {
+                QDomElement li = element.ownerDocument().createElement("li");
+                element.appendChild(li);
+                buildDom(li, it);
+            }
         }
             break;
         
@@ -67,7 +45,7 @@ void QSugarVariantMap::buildDom(QDomElement & element, const QVariant & value) c
             QVariantMap map = value.toMap();
             foreach ( QString key, map.keys() )
             {
-                if ( key.isEmpty() )
+                if ( key.isEmpty() ) // empty key designates body
                     buildDom(element, map[key]);
                 else if ( key.startsWith("@") )
                     element.setAttribute(key.mid(1), map[key].toString());
@@ -90,9 +68,13 @@ void QSugarVariantMap::buildDom(QDomElement & element, const QVariant & value) c
             );
         }
     }
-/*    foreach ( QString key, keys() )
-    {
-    }*/
+}
+
+
+QDomDocument operator<< (QDomDocument doc, QVariant var)
+{
+    buildDom(doc.documentElement(), var);
+    return doc;
 }
 
 

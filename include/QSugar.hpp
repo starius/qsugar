@@ -60,10 +60,6 @@ public:
     /// otherwise, the root is &lt;root/&gt;
     QDomDocument toDom() const;
     
-private:
-    
-    void buildDom(QDomElement & element, const QVariant & value) const;
-    
 }; // class QSugarVariantMap
 
 
@@ -236,6 +232,9 @@ QDomDocument operator> (QDomDocument ldoc, const QDomDocument & rdoc);
 /// synonym
 inline QDomDocument operator<< (QDomDocument ldoc, const QDomDocument & rdoc)
 { return ldoc > rdoc; }
+
+
+QDomDocument operator<< (QDomDocument doc, QVariant var);
 
 
 extern const QSugarVariantList QLIST;

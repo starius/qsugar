@@ -22,11 +22,6 @@
 #include "QSugar.hpp"
 
 
-QVariantList varlist;
-QSugarVariantList sugarlist;
-QSugarVariantMap sugarmap;
-
-
 inline QString spaces(unsigned n)
 {
     return QString("%1").arg("", n);
@@ -81,7 +76,7 @@ bool test_QLIST_QDICT()
         QVariantList() << 1 << 2.0 << "3"
     );
     
-    varlist = QLIST << 1 << 2.0 << "3";
+    QVariantList varlist = QLIST << 1 << 2.0 << "3";
     
     qDebug() << prettyString(varlist);
     
@@ -94,12 +89,12 @@ bool test_QLIST_QDICT()
     m["three"] = "3";
     qDebug() << m;
     
-    sugarmap = QDICT
+    m = QDICT
         << "one" >> 1
         << "two" >> 2.0
         << "three" >> "3";
     
-    qDebug() << prettyString(sugarmap);
+    qDebug() << prettyString(m);
     
     // A more complicated example
     
@@ -289,6 +284,46 @@ bool test_xmlLifelike()
 }
 
 
+bool test_xmlRepresentation()
+{
+    QVariant var = (QDICT
+        << "one" >> 1
+        << "two" >> 2.0
+        << "three" >> "3"
+        << "nested_list" >> (QLIST
+            << 4
+            << 5.0
+            << QVariant(QLIST
+                << "list"
+                << "in"
+                << "a"
+                << "list"
+            )
+        )
+        << "nested_dictionary" >> (QDICT
+            << "six" >> "6"
+            << "seven" >> (QLIST
+                << "nested list"
+                << "in a nested dictionary"
+            )
+        )
+    );
+    
+    qDebug() << "var =" << var;
+    
+    QString xvar = (QXML"xvar" << var).toString(4);
+    
+    qDebug() << "xvar =" << xvar;
+    /*
+    QVariant var2;
+    xvar >> var2;
+    
+    qDebug() << "var2 =" << var2;
+    */
+    return true;
+}
+
+
 int main(int argc, char * argv[])
 {
     QApplication app(argc, argv);
@@ -309,6 +344,9 @@ int main(int argc, char * argv[])
         break;
     case '4':
         test_xmlLifelike();
+        break;
+    case '5':
+        test_xmlRepresentation();
         break;
     }
     
