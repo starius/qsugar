@@ -19,8 +19,6 @@
 #include "QSugar.hpp"
 
 
-const QSugarVariantList QLIST;
-const QSugarVariantMap QMAP;
 const QDomDocument _QXML;
 
 
@@ -71,7 +69,40 @@ void buildDom(QDomElement element, const QVariant & value)
 }
 
 
-QDomDocument operator<< (QDomDocument doc, QVariant var)
+QDomDocument QSugarDomDocument::operator> (const QVariant & value)
+{
+    if ( pendingKey.isEmpty() )
+        buildDom(documentElement(), value);
+    else if ( pendingKey.startsWith("@") ) // attribute
+        documentElement().setAttribute(pendingKey.mid(1), value.toString());
+    else
+    {
+        QDomElement element = createElement(pendingKey);
+        documentElement().appendChild(element);
+        buildDom(element, value);
+    }
+    pendingKey.clear();
+    return *dynamic_cast<QDomDocument*>(this);
+}
+
+
+QDomDocument QSugarDomDocument::operator> (QDomDocument doc)
+{
+    if ( pendingKey.isEmpty() )
+        documentElement().appendChild(doc);
+    else
+    {
+        QDomElement element = createElement(pendingKey);
+        documentElement().appendChild(element);
+        element.appendChild(doc);
+    }
+    pendingKey.clear();
+    return *dynamic_cast<QDomDocument*>(this);
+}
+
+
+
+QDomDocument operator> (QDomDocument doc, QVariant var)
 {
     buildDom(doc.documentElement(), var);
     return doc;
@@ -97,15 +128,68 @@ QSugarDomDocument operator< (QDomDocument doc, const QString & key)
 }
 
 
-QDomDocument operator> (QDomDocument doc, const QString & value)
-{
-    doc.documentElement().appendChild(doc.createTextNode(value));
-    return doc;
-}
-
-
 QDomDocument operator> (QDomDocument ldoc, const QDomDocument & rdoc)
 {
     ldoc.documentElement().appendChild(rdoc);
     return ldoc;
+}
+
+
+QVariant takeApartDom(QDomElement el)
+{
+    QString valuetype = el.attribute("valuetype", "map");
+    
+    if ( valuetype == "map" )
+    {
+        QVariantMap varmap;
+        QString body;
+        
+        QDomNamedNodeMap attributes = el.attributes();
+        for ( uint i = 0; i < attributes.count(); ++i )
+        {
+            QDomAttr attr = attributes.item(i).toAttr();
+            varmap << ("@" + attr.name()) >> attr.value();
+        }
+        
+        for ( QDomNode node = el.firstChild(); ! node.isNull(); node = node.nextSibling() )
+        {
+            if ( node.isElement() )
+            {
+                QDomElement child = node.toElement();
+                varmap << child.tagName() >> takeApartDom(child);
+            }
+            else if ( node.isText() )
+            {
+                body = node.toText().data();
+            }
+        }
+        
+        if ( varmap.size() ) // sub-elements exist
+        {
+            if ( ! body.isEmpty() )
+                varmap << "" >> body;
+            return varmap;
+        }
+        else
+            return el.text();
+    }
+    else if ( valuetype == "list" )
+    {
+        QVariantList varlist;
+        for ( QDomNode node = el.firstChild(); ! node.isNull(); node = node.nextSibling() )
+        {
+            if ( node.isElement() )
+                varlist << takeApartDom(node.toElement());
+        }
+        
+        return varlist;
+    }
+    
+    return QVariant(); // empty
+}
+
+
+void operator>> (QDomDocument doc, QVariant & var)
+{
+    var = takeApartDom(doc.documentElement());
 }

@@ -24,72 +24,65 @@
 #include <QtXml>
 
 
-class QSugarVariantList:
-    public QVariantList
+class QSugarVariantMapCarrierConst
 {
     
+private:
+    
+    QVariantMap vmapcopy;
+    QString pendingKey;
+    
 public:
+    
+    QSugarVariantMapCarrierConst(const QVariantMap & vmap, const QString & key):
+        vmapcopy(vmap),
+        pendingKey(key)
+    {
+    }
     
     template <class T>
-    QVariantList operator<< (const T & value) const
+    QVariantMap operator>> (const T & value)
     {
-        QVariantList temp(*this);
-        temp << value;
-        return temp;
+        vmapcopy.insert(pendingKey, value);
+        return vmapcopy;
     }
     
-}; // class QSugarVariantList
-
-
-class QSugarVariantMap:
-    public QVariantMap
-{
-    
-public:
-    
-    QSugarVariantMap()
-    {
-    }
-    
-    QSugarVariantMap(QVariantMap vmap)
-    {
-        *dynamic_cast<QVariantMap*>(this) = vmap;
-    }
-    
-    /// if there is 1 element, it is the root
-    /// otherwise, the root is &lt;root/&gt;
-    QDomDocument toDom() const;
-    
-}; // class QSugarVariantMap
+}; // class QSugarVariantMapCarrier
 
 
 class QSugarVariantMapCarrier
 {
     
+private:
+    
+    QVariantMap & vmap;
+    QString pendingKey;
+    
 public:
     
-    QSugarVariantMapCarrier(QSugarVariantMap vmap, const QString & key):
+    QSugarVariantMapCarrier(QVariantMap & vmap, const QString & key):
         vmap(vmap),
         pendingKey(key)
     {
     }
     
     template <class T>
-    QSugarVariantMap operator>> (const T & value)
+    QVariantMap & operator>> (const T & value)
     {
         vmap.insert(pendingKey, value);
         return vmap;
     }
     
-private:
-    
-    QSugarVariantMap vmap;
-    QString pendingKey;
-    
 }; // class QSugarVariantMapCarrier
 
 
-inline QSugarVariantMapCarrier operator<< (const QVariantMap & vmap, const QString & key)
+inline QSugarVariantMapCarrierConst operator<< (const QVariantMap & vmap, const QString & key)
+{
+    return QSugarVariantMapCarrierConst(vmap, key);
+}
+
+
+inline QSugarVariantMapCarrier operator<< (QVariantMap & vmap, const QString & key)
 {
     return QSugarVariantMapCarrier(vmap, key);
 }
@@ -169,35 +162,9 @@ public:
         *dynamic_cast<QDomDocument*>(this) = doc;
     }
     
-    QDomDocument operator> (const QString & value)
-    {
-        if ( pendingKey.isEmpty() )
-            documentElement().appendChild(createTextNode(value));
-        else if ( pendingKey.startsWith("@") ) // attribute
-            documentElement().setAttribute(pendingKey.mid(1), value);
-        else
-        {
-            QDomElement element = createElement(pendingKey);
-            documentElement().appendChild(element);
-            element.appendChild(createTextNode(value));
-        }
-        pendingKey.clear();
-        return *dynamic_cast<QDomDocument*>(this);
-    }
+    QDomDocument operator> (const QVariant & value);
     
-    QDomDocument operator> (QDomDocument doc)
-    {
-        if ( pendingKey.isEmpty() )
-            documentElement().appendChild(doc);
-        else
-        {
-            QDomElement element = createElement(pendingKey);
-            documentElement().appendChild(element);
-            element.appendChild(doc);
-        }
-        pendingKey.clear();
-        return *dynamic_cast<QDomDocument*>(this);
-    }
+    QDomDocument operator> (QDomDocument doc);
     
     /// synonym for operator>()
     QDomDocument operator<< (QDomDocument doc)
@@ -224,9 +191,6 @@ QDomDocument operator* (const QDomDocument &, const QString & code);
 QSugarDomDocument operator< (QDomDocument doc, const QString & key);
 
 
-QDomDocument operator> (QDomDocument doc, const QString & value);
-
-
 QDomDocument operator> (QDomDocument ldoc, const QDomDocument & rdoc);
 
 /// synonym
@@ -234,13 +198,20 @@ inline QDomDocument operator<< (QDomDocument ldoc, const QDomDocument & rdoc)
 { return ldoc > rdoc; }
 
 
-QDomDocument operator<< (QDomDocument doc, QVariant var);
+QDomDocument operator> (QDomDocument doc, QVariant var);
+
+/// synonym
+QDomDocument operator<< (QDomDocument doc, QVariant var)
+{ return doc > var; }
 
 
-extern const QSugarVariantList QLIST;
-extern const QSugarVariantMap QMAP;
+void operator>> (QDomDocument doc, QVariant & var);
+
+
+#define QLIST (QVariantList())
+#define QMAP (QVariantMap())
 extern const QDomDocument _QXML;
-#define QXML _QXML*
+#define QXML (_QXML)*
 
 
 #endif // QSugar_QSugar_hpp

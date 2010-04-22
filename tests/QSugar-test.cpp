@@ -269,7 +269,7 @@ bool test_xmlLifelike()
             <"link"> "http://bitbucket.org/cblp/qsugar/"
             <"description"> "Exporting RSS-like snippet of XML code using both classic QtXml approach and QXML pseudokeyword."
             <"author"> "cblp"
-            <"pubDate"> QDateTime::currentDateTime().toString(Qt::ISODate)
+            <"pubDate"> QDateTime::currentDateTime()
         );
     }
     doc << channel; // Yes, QSugar is here, too!
@@ -284,7 +284,7 @@ bool test_xmlRepresentation()
 {
     QVariant var = (QMAP
         << "one" >> 1
-        << "two" >> 2.0
+        << "@two" >> 2.0
         << "three" >> "3"
         << "nested_list" >> (QLIST
             << 4
@@ -301,15 +301,15 @@ bool test_xmlRepresentation()
     
     qDebug() << "var =" << var;
     
-    QString xvar = (QXML"xvar" << var).toString(4);
+    QString xvar = (QXML"xvar" > var).toString(4);
     
     qDebug() << "xvar =" << xvar;
-    /*
-    QVariant var2;
-    xvar >> var2;
     
-    qDebug() << "var2 =" << var2;
-    */
+    QVariant var2;
+    QXML xvar >> var2;
+    
+    qDebug() << "var2 =" << prettyString(var2);
+    
     return true;
 }
 
