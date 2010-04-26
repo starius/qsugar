@@ -145,7 +145,7 @@ QVariant takeApartDom(QDomElement el)
         QString body;
         
         QDomNamedNodeMap attributes = el.attributes();
-        for ( uint i = 0; i < attributes.count(); ++i )
+        for ( int i = 0; i < attributes.count(); ++i )
         {
             QDomAttr attr = attributes.item(i).toAttr();
             varmap << ("@" + attr.name()) >> attr.value();
